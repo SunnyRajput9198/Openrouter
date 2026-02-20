@@ -31,7 +31,7 @@ export const app = new Elysia({ prefix: "/apikeys" })
             id,
             apiKey
         }
-        
+
     },{
             body: Apikeymodel.createApiKeySchema,
             response: {
@@ -76,7 +76,7 @@ export const app = new Elysia({ prefix: "/apikeys" })
             return {
                 message: 'API key deleted successfully'
             }
-
+ 
         }catch(e){
             return status(411,{
                 message: 'Deleting API key unsuccessful'
