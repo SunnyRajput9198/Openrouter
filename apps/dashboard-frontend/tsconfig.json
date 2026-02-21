@@ -23,7 +23,8 @@
 
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "app": ["../primary-backend/app/src/app.ts"]  // ✅ inside compilerOptions
     },
 
     // Some stricter flags (disabled by default)
@@ -32,5 +33,6 @@
     "noPropertyAccessFromIndexSignature": false
   },
 
-  "exclude": ["dist", "node_modules"]
+  "exclude": ["dist", "node_modules"],
+  "include": ["src", "../primary-backend/app"]
 }
