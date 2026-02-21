@@ -18,9 +18,9 @@ export function Dashboard() {
     const elysiaClient = useElysiaClient();
 
     const apiKeysQuery = useQuery({
-        queryKey: ["api-keys"],
+        queryKey: ["apikeys"],
         queryFn: async () => {
-            const response = await elysiaClient["api-keys"].get();
+            const response = await elysiaClient["apikeys"].get();
             if (response.error) throw new Error("Failed to fetch API keys");
             return response.data;
         },
@@ -131,7 +131,7 @@ export function Dashboard() {
                                     </p>
                                 </div>
                                 <Button variant="outline" size="sm" asChild>
-                                    <Link to="/api-keys">
+                                    <Link to="/apikeys">
                                         Go
                                         <ArrowRight className="size-3.5" />
                                     </Link>
@@ -169,7 +169,7 @@ export function Dashboard() {
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-sm font-semibold">Your API Keys</h2>
                             <Button variant="ghost" size="sm" asChild>
-                                <Link to="/api-keys" className="text-xs">
+                                <Link to="/apikeys" className="text-xs">
                                     View all
                                     <ArrowRight className="size-3" />
                                 </Link>

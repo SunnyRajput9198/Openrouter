@@ -35,9 +35,9 @@ export function ApiKeys() {
     const [revealedKeys, setRevealedKeys] = useState<Set<string>>(new Set());
 
     const apiKeysQuery = useQuery({
-        queryKey: ["api-keys"],
+        queryKey: ["apikeys"],
         queryFn: async () => {
-            const response = await elysiaClient["api-keys"].get();
+            const response = await elysiaClient["apikeys"].get();
             if (response.error) throw new Error("Failed to fetch API keys");
             return response.data;
         },
@@ -45,7 +45,7 @@ export function ApiKeys() {
 
     const createMutation = useMutation({
         mutationFn: async (name: string) => {
-            const response = await elysiaClient["api-keys"].post({ name });
+            const response = await elysiaClient["apikeys"].post({ name });
             if (response.error) {
                 const errValue = response.error.value as { message?: string } | undefined;
                 throw new Error(errValue?.message || "Failed to create API key");
@@ -55,13 +55,13 @@ export function ApiKeys() {
         onSuccess: (data) => {
             setNewlyCreatedKey(data?.apiKey ?? null);
             if (nameRef.current) nameRef.current.value = "";
-            queryClient.invalidateQueries({ queryKey: ["api-keys"] });
+            queryClient.invalidateQueries({ queryKey: ["apikeys"] });
         },
     });
 
     const toggleMutation = useMutation({
         mutationFn: async ({ id, disabled }: { id: string; disabled: boolean }) => {
-            const response = await elysiaClient["api-keys"].put({ id, disabled });
+            const response = await elysiaClient["apikeys"].put({ id, disabled });
             if (response.error) {
                 const errValue = response.error.value as { message?: string } | undefined;
                 throw new Error(errValue?.message || "Failed to update API key");
@@ -69,13 +69,13 @@ export function ApiKeys() {
             return response.data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["api-keys"] });
+            queryClient.invalidateQueries({ queryKey: ["apikeys"] });
         },
     });
 
     const deleteMutation = useMutation({
         mutationFn: async (id: string) => {
-            const response = await elysiaClient["api-keys"]({ id }).delete();
+            const response = await elysiaClient["apikeys"]({ id }).delete();
             if (response.error) {
                 const errValue = response.error.value as { message?: string } | undefined;
                 throw new Error(errValue?.message || "Failed to delete API key");
@@ -83,7 +83,7 @@ export function ApiKeys() {
             return response.data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["api-keys"] });
+            queryClient.invalidateQueries({ queryKey: ["apikeys"] });
         },
     });
 

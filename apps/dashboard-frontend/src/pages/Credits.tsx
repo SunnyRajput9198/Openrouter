@@ -24,9 +24,9 @@ export function Credits() {
     const queryClient = useQueryClient();
 
     const apiKeysQuery = useQuery({
-        queryKey: ["api-keys"],
+        queryKey: ["apikeys"],
         queryFn: async () => {
-            const response = await elysiaClient["api-keys"].get();
+            const response = await elysiaClient["apikeys"].get();
             if (response.error) throw new Error("Failed to fetch API keys");
             return response.data;
         },
@@ -51,7 +51,7 @@ export function Credits() {
             return response.data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["api-keys"] });
+            queryClient.invalidateQueries({ queryKey: ["apikeys"] });
             queryClient.invalidateQueries({ queryKey: ["user-profile"] });
         },
     });
@@ -134,7 +134,7 @@ export function Credits() {
                                             <span className="text-muted-foreground truncate mr-4">{key.name}</span>
                                             <span className="tabular-nums font-medium">
                                                 {(key.credisConsumed ?? 0).toLocaleString()}
-                                            </span>
+                                            </span> 
                                         </div>
                                     ))}
                                     {apiKeys.length > 4 && (

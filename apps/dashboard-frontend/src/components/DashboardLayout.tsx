@@ -10,7 +10,7 @@ import {
 
 const navItems = [
     { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { label: "API Keys", href: "/api-keys", icon: Key },
+    { label: "API Keys", href: "/apikeys", icon: Key },
     { label: "Credits", href: "/credits", icon: Coins },
 ];
 

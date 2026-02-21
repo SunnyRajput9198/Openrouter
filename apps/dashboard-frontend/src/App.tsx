@@ -31,7 +31,7 @@ export function App() {
               <Route path={"/signin"} element={<Signin />} /> 
               <Route path={"/dashboard"} element={<Dashboard />} /> 
               <Route path={"/credits"} element={<Credits />} /> 
-              <Route path={"/api-keys"} element={<ApiKeys />} /> 
+              <Route path={"/apikeys"} element={<ApiKeys />} /> 
             </Routes>
           </BrowserRouter>
       </ElysiaClientContextProvider>
