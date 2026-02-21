@@ -34,4 +34,15 @@ static async signin(email: string, password: string): Promise<{correctCredential
         return { correctCredentials: true, userId: user.id.toString() };
     } 
 
+static async getUserDetails(userId: number) : Promise<{credits: number} | null> {
+    return prisma.user.findFirst({
+        where: {
+            id: userId
+        },
+        select: {
+            credits: true
+        }
+    })
+}
+
 }

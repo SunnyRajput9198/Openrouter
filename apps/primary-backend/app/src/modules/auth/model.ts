@@ -38,4 +38,13 @@ export namespace Authmodel{
     
 	export type signInInvalid = typeof signInInvalid.static
     export type signUpInvalid = typeof signUpInvalid.static
+
+     export const getUserDetailsResponseSchema = t.Object({
+        credits: t.Number()
+    })
+    export type getUserDetailsResponseSchema=typeof getUserDetailsResponseSchema.static
+     export const getUserDetailsResponseErrorSchema = t.Object({
+        message: t.Literal('Error fetching user details')
+    })
+    export type getUserDetailsResponseErrorSchema=typeof getUserDetailsResponseErrorSchema.static
 }

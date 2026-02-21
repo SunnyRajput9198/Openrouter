@@ -67,6 +67,38 @@ export const app = new Elysia({ prefix: "/auth" })
         403: Authmodel.signinFailedSchema,
       }
     }
-  );
+  )
+ 
+  .resolve(async ({ cookie: { auth }, status, jwt}) => {
+           if (!auth) {
+               return status(401)
+           }
+   
+           const decoded = await jwt.verify(auth.value as string);
+   
+           if (!decoded || !decoded.userId) {
+               return status(401)
+           }
+   
+           return {
+               userId: decoded.userId as string
+           }
+       })
 
+   .get("/profile",async({userId,status})=>{
+    const userdata= await Authservice.getUserDetails(Number(userId));
+    if(!userdata){
+        return status(400,{
+          message: "Error fetching user details"
+        })
+    }
+
+    return userdata;
+    
+    },{
+        response: {
+            200: Authmodel.getUserDetailsResponseSchema,
+            400: Authmodel.getUserDetailsResponseErrorSchema
+
+   }})
 // auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1IiwiaWF0IjoxNzcxNTYwNDEwfQ.N9DdANIbS6bO9EhtUlNQFF98isOvO4Y3I9aFoggp41w; Max-Age=604800; Path=/; HttpOnly
