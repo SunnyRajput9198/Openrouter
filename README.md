@@ -1,136 +1,196 @@
-# Turborepo starter
+# OpenRouter Clone – AI Model Gateway
 
-This Turborepo starter is maintained by the Turborepo core team.
+A unified API gateway for routing requests across multiple AI models, inspired by [OpenRouter](https://openrouter.ai). Built as a high-performance monorepo using Elysia.js on Bun.
 
-## Using this example
+---
 
-Run the following command:
+## Screenshots
 
-```sh
-npx create-turbo@latest
+![Dashboard Overview](images/img1.png.png)
+
+![Model Routing](images/img2.png.png)
+
+![API Response](images/img3.png.png)
+
+---
+
+## What It Does
+
+Most AI apps are hardcoded to one model. Swap providers and everything breaks.
+
+This system is different. It provides a single API interface that routes requests to multiple AI providers — Anthropic, OpenAI, Google Gemini — with a clean dashboard to manage and monitor everything.
+
+---
+
+## Features
+
+- **Multi-model routing** — Send requests to Claude, GPT, or Gemini through one unified API
+- **Provider abstraction** — Switch models without changing your app code
+- **JWT Authentication** — Secure API key management
+- **Real-time dashboard** — Monitor requests, usage, and responses
+- **Type-safe end-to-end** — Elysia Eden treaty for fully typed API calls from frontend to backend
+
+---
+
+## Tech Stack
+
+**Backend (api-backend):**
+- [Elysia.js](https://elysiajs.com/) — Fast, type-safe Bun web framework
+- [Bun](https://bun.sh/) — JavaScript runtime & package manager
+- Anthropic SDK, OpenAI SDK, Google Gemini SDK
+- `@elysiajs/bearer` — Bearer token auth
+- `@elysiajs/openapi` — Auto-generated API docs
+
+**Auth Backend (primary-backend):**
+- Elysia.js + Bun
+- JWT Authentication (`@elysiajs/jwt`)
+- CORS (`@elysiajs/cors`)
+
+**Frontend (dashboard-frontend):**
+- React 18 + TypeScript
+- React Router v7
+- TanStack Query v5
+- Radix UI + Tailwind CSS v4
+- Elysia Eden (type-safe API client)
+- Bun bundler with `bun-plugin-tailwind`
+
+**Shared:**
+- `db` — Shared database package
+- [Turborepo](https://turbo.build/) — Monorepo build system
+- TypeScript across all packages
+
+---
+
+## Project Structure
+
+```
+Openrouter/
+├── apps/
+│   ├── api-backend/          # Main AI gateway (Elysia + Bun)
+│   ├── primary-backend/      # Auth & user management (Elysia + Bun)
+│   └── dashboard-frontend/   # React dashboard (Bun bundler)
+├── packages/
+│   ├── db/                   # Shared database layer
+│   ├── ui/                   # Shared UI components
+│   ├── eslint-config/
+│   └── typescript-config/
+├── bunfig.toml
+└── turbo.json
 ```
 
-## What's inside?
+---
 
-This Turborepo includes the following packages/apps:
+## Getting Started
 
-### Apps and Packages
+### Prerequisites
+- [Bun](https://bun.sh/) v1.1.20+
+- PostgreSQL
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### Installation
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+```bash
+git clone https://github.com/SunnyRajput9198/Openrouter.git
+cd Openrouter
 
-### Utilities
+# Install all dependencies
+bun install
+```
 
-This Turborepo has some additional tools already setup for you:
+### Environment Setup
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+```bash
+# apps/api-backend/.env
+ANTHROPIC_API_KEY=your_anthropic_key
+OPENAI_API_KEY=your_openai_key
+GOOGLE_API_KEY=your_google_key
+
+# apps/primary-backend/.env
+JWT_SECRET=your_jwt_secret
+DATABASE_URL=postgresql://user:password@localhost:5432/openrouter
+```
+
+### Run in Development
+
+```bash
+# Run all services together
+bun run dev
+
+# Or run individually
+cd apps/api-backend && bun run dev        # API Gateway → port 3000
+cd apps/primary-backend && bun run dev    # Auth Backend → port 3002
+cd apps/dashboard-frontend && bun run dev # Dashboard → port 3001
+```
 
 ### Build
 
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+```bash
+bun run build
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+---
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+## API Usage
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+Once running, hit the gateway like this:
 
-### Develop
+```bash
+# Route to Claude
+curl -X POST http://localhost:3000/api/chat \
+  -H "Authorization: Bearer your_token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "claude-sonnet-4-20250514",
+    "messages": [{ "role": "user", "content": "Hello!" }]
+  }'
 
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+# Route to GPT
+curl -X POST http://localhost:3000/api/chat \
+  -H "Authorization: Bearer your_token" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-4o",
+    "messages": [{ "role": "user", "content": "Hello!" }]
+  }'
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+Auto-generated API docs available at: `http://localhost:3000/swagger`
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+---
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+## Current Status
 
-### Remote Caching
+**Working:**
+- ✅ Multi-model routing (Anthropic, OpenAI, Gemini)
+- ✅ JWT auth with bearer tokens
+- ✅ React dashboard with real-time updates
+- ✅ Type-safe Eden client (no manual type duplication)
+- ✅ Turborepo monorepo with shared packages
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+**In Progress:**
+- 🚧 Usage analytics & cost tracking
+- 🚧 Rate limiting per API key
+- 🚧 Model fallback (auto-retry on failure)
+- 📋 Streaming response support
+- 📋 Prompt caching layer
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+---
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+## Why Bun + Elysia?
 
-```
-cd my-turborepo
+- **Bun** is significantly faster than Node.js for I/O-heavy workloads like API proxying
+- **Elysia** gives end-to-end type safety via Eden — the frontend knows exact request/response types without any code generation step
+- **Turborepo** makes managing 3 apps + shared packages clean and fast
 
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
+---
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
+## License
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+MIT — do whatever you want with it.
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+---
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
+## Contact
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
+GitHub: [@SunnyRajput9198](https://github.com/SunnyRajput9198)
 
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
-# Openrouter
+Issues: [GitHub Issues](https://github.com/SunnyRajput9198/Openrouter/issues)
